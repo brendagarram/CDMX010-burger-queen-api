@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+const user = require('../models/userModel.js');
 
 const {
   requireAuth,
@@ -8,24 +9,43 @@ const {
 const {
   getUsers,
 } = require('../controller/users');
-
+const users = require('../controller/users');
 
 const initAdminUser = (app, next) => {
   const { adminEmail, adminPassword } = app.get('config');
   if (!adminEmail || !adminPassword) {
-    return next();
+    console.log(adminEmail);
+    return next(400);
   }
 
-  const adminUser = {
-    email: adminEmail,
-    password: bcrypt.hashSync(adminPassword, 10),
-    roles: { admin: true },
-  };
-
-  // TODO: crear usuaria admin
-  next();
+  user.findOne({ email: adminEmail }, (err, res) => {
+    if (err) {
+      //  console.log(err);
+      console.error.bind(conauthsole, err);
+    }
+    if (res) {
+      next();
+    } else {
+      const adminUser = {
+        email: adminEmail,
+        password: bcrypt.hashSync(adminPassword, 10),
+        roles: { admin: true },
+      };
+        // TO DO: crear usuarix admin
+      const userAdmin = new user();
+      userAdmin.email = adminUser.email;
+      userAdmin.password = adminUser.password;
+      userAdmin.roles = adminUser.roles;
+      userAdmin.save((err, res) => {
+        if (err) {
+          console.error.bind(console, err);
+        }
+        //  cd console.log(res);
+        next();
+      });
+    }
+  });
 };
-
 
 /*
  * Diagrama de flujo de una aplicación y petición en node - express :
@@ -76,7 +96,7 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin
    */
-  app.get('/users', requireAdmin, getUsers);
+  // app.get('/users', requireAdmin, getUsers);
 
   /**
    * @name GET /users/:uid

@@ -2,6 +2,7 @@ const path = require('path');
 const { spawn } = require('child_process');
 const nodeFetch = require('node-fetch');
 const kill = require('tree-kill');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const config = require('../config');
 
@@ -110,18 +111,24 @@ module.exports = () => new Promise((resolve, reject) => {
   }
 
   // TODO: Configurar DB de tests
+  const mongod = new MongoMemoryServer();
+
+  mongod.getUri().then((mongoUrl) => {
+    process.env.DB_URL = mongoUrl;
+    console.info('\nIn-memory mongo server ', mongoUrl);
 
   console.info('Staring local server...');
-  const child = spawn('npm', ['start', process.env.PORT || 8888], {
+  const child = spawn(/^win/.test(process.platform) ? 'npm.cmd' : 'npm', ['start',  process.env.PORT || 8888], {
+  //  const child = spawn('npm', ['start', process.env.PORT || 8888], {
     cwd: path.resolve(__dirname, '../'),
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 
   Object.assign(__e2e, { childProcessPid: child.pid });
 
-  child.stdout.on('data', (chunk) => {
-    console.info(`\x1b[34m${chunk.toString()}\x1b[0m`);
-  });
+  // child.stdout.on('data', (chunk) => {
+  //   console.info(`\x1b[34m${chunk.toString()}\x1b[0m`);
+  // });
 
   child.stderr.on('data', (chunk) => {
     const str = chunk.toString();
@@ -144,6 +151,7 @@ module.exports = () => new Promise((resolve, reject) => {
     .catch((err) => {
       kill(child.pid, 'SIGKILL', () => reject(err));
     });
+  });
 });
 
 // Export globals - ugly... :-(

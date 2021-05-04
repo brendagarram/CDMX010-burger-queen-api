@@ -8,20 +8,19 @@ const {
 
 const {
   getUsers,
-} = require('../controller/users');
-const users = require('../controller/users');
+} = require('../controller/users.js');
+//  const users = require('../controller/users');
 
 const initAdminUser = (app, next) => {
   const { adminEmail, adminPassword } = app.get('config');
   if (!adminEmail || !adminPassword) {
-    console.log(adminEmail);
     return next(400);
   }
 
   user.findOne({ email: adminEmail }, (err, res) => {
     if (err) {
       //  console.log(err);
-      console.error.bind(conauthsole, err);
+      console.error.bind(console, err);
     }
     if (res) {
       next();
@@ -40,7 +39,6 @@ const initAdminUser = (app, next) => {
         if (err) {
           console.error.bind(console, err);
         }
-        //  cd console.log(res);
         next();
       });
     }
@@ -96,7 +94,8 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin
    */
-  // app.get('/users', requireAdmin, getUsers);
+  /// app.get('/users', requireAdmin, getUsers);
+  app.get('/users', requireAuth, getUsers);
 
   /**
    * @name GET /users/:uid

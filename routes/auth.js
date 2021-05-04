@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const config = require('../config');
+const users = require('../controller/users');
 
 const { secret } = config;
 
@@ -17,7 +18,7 @@ module.exports = (app, nextMain) => {
    * @code {400} si no se proveen `email` o `password` o ninguno de los dos
    * @auth No requiere autenticación
    */
-  app.post('/auth', (req, resp, next) => {
+  app.post('/auth' (req, resp, next) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -25,8 +26,9 @@ module.exports = (app, nextMain) => {
     }
 
     // TODO: autenticar a la usuarix
-    next();
-  });
+    
+    
+  //});
 
   return nextMain();
 };

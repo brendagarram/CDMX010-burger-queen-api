@@ -1,10 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const config = require('./config');
+const cors = require('cors');
 const authMiddleware = require('./middleware/auth');
 const errorHandler = require('./middleware/error');
 const routes = require('./routes');
 const pkg = require('./package.json');
+const { corsOptions } = require('./corsOptions.js');
 
 const { port, dbUrl, secret } = config;
 const app = express();
@@ -24,6 +26,7 @@ db.once('open', console.warn.bind(console, 'MongoDB is connected'));
 
 app.set('config', config);
 app.set('pkg', pkg);
+app.use(cors());
 
 // parse application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: false }));

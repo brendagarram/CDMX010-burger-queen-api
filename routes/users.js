@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const user = require('../models/userModel.js');
+const cors = require('cors');
+const { corsOptions } = require('../corsOptions.js');
 
 const {
   requireAuth,
@@ -95,7 +97,8 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin
    */
   /// app.get('/users', requireAdmin, getUsers);
-  app.get('/users', requireAuth, getUsers);
+  //app.get('/users', requireAuth, getUsers);
+  app.get('/users', cors(corsOptions), getUsers);
 
   /**
    * @name GET /users/:uid

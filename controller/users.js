@@ -42,7 +42,7 @@ module.exports = {
     }
   },
   getUsers: async (req, resp) => {
-    console.log('entro');
+    //console.log('entro');
     const limitPage = parseInt(req.query.limit) || 10;
     const page = parseInt(req.query.page) || 1;
     const result = await users.find().skip((page - 1) * limitPage).limit(limitPage).exec();

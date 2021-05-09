@@ -1,5 +1,3 @@
-// const jwt = require('jsonwebtoken');
-// const config = require('../config');
 const { createToken } = require('../controller/users.js');
 
 /** @module auth */

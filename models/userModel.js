@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     type: Object,
     required: true,
     default: { admin: false },
-	}
+  },
 });
 
 const User = mongoose.model('User', userSchema);

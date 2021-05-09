@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
-const user = require('../models/userModel.js');
 const cors = require('cors');
+const user = require('../models/userModel.js');
 const { corsOptions } = require('../corsOptions.js');
 
 const {
@@ -9,7 +9,7 @@ const {
 } = require('../middleware/auth');
 
 const {
-  getUsers,
+  getUsers, getUserUid,
 } = require('../controller/users.js');
 //  const users = require('../controller/users');
 
@@ -96,9 +96,7 @@ module.exports = (app, next) => {
    * @code {401} si no hay cabecera de autenticación
    * @code {403} si no es ni admin
    */
-  /// app.get('/users', requireAdmin, getUsers);
-  //app.get('/users', requireAuth, getUsers);
-  app.get('/users', cors(corsOptions), getUsers);
+  app.get('/users', cors(corsOptions), requireAdmin, getUsers);
 
   /**
    * @name GET /users/:uid
@@ -116,8 +114,7 @@ module.exports = (app, next) => {
    * @code {403} si no es ni admin o la misma usuaria
    * @code {404} si la usuaria solicitada no existe
    */
-  app.get('/users/:uid', requireAuth, (req, resp) => {
-  });
+  app.get('/users/:uid', requireAuth, getUserUid);
 
   /**
    * @name POST /users

@@ -12,6 +12,7 @@ const root = (app, next) => {
 
 // eslint-disable-next-line consistent-return
 const register = (app, routes, cb) => {
+  // console.log(routes);
   if (!routes.length) {
     return cb();
   }

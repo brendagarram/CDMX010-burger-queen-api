@@ -2,20 +2,16 @@ const jwt = require('jsonwebtoken');
 const users = require('../models/userModel.js');
 
 module.exports = (secret) => (req, resp, next) => {
-  //  console.log('revisando auth');
   const { authorization } = req.headers;
-  //  console.log(req.headers);
   if (!authorization) {
     return next();
   }
 
   const token = authorization.split(' ')[1];
-  //  console.log(token);
 
   jwt.verify(token, secret, (err, decodedToken) => {
     if (err) { next(403); }
     // TODO: Verificar identidad del usuario usando `decodeToken.uid`
-    //  console.log(decodedToken.uid);
     users.findOne({ _id: decodedToken.uid }, (err, user) => {
       if (err) { next(500, err); }
       req.headers.user = user;

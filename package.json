@@ -21,8 +21,7 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
-    "mongodb": "^3.6.6",
-    "mongoose": "^5.12.5"
+    "mongoose": "^5.12.7"
   },
   "devDependencies": {
     "docdash": "^1.2.0",
@@ -33,6 +32,7 @@
     "jest": "^26.6.3",
     "jsdoc": "^3.6.6",
     "jsdoc-http-plugin": "^0.3.2",
+    "mongodb-memory-server": "^6.9.6",
     "node-fetch": "^2.6.1",
     "nodemon": "^2.0.7",
     "tree-kill": "^1.2.2"

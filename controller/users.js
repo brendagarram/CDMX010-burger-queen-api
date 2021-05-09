@@ -1,34 +1,42 @@
-module.exports = {
-  getUsers: (req, resp, next) => {
-  },
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const user = require('../models/userModel.js');
+//  const error = require('../middleware/error.js');
+const config = require('../config.js');
 
-  // postUser: async (req, res, next) => {
-  //   const { email, password } = req.body;
-  //   if (!password) return next(400);
-  //   if ( !password || !email || (!email && !password) || password.length <= 6 ) { //Agregar la validación de email con expresiones regulares
-  //     return next(400);
-  //   }
-  //   const invalidUser = await users.findOne({ email: req.body.email });
-  //   if (invalidUser) return next(403);
-  //   let newUser = new user(); //se crea la nueva instancia con el modelo user
-  //   newUser.email = email;
-  //   newUser.password = bcrypt.hashSync(password, 10);
-  //   if (req.body._id) {
-  //       newUser._id = req.body._id;
-  //   }
-  //   // if (req.body.roles && req.body.roles.admin) {
-  //   //     newUser.roles = { admin: true }
-  //   // }
-  //   const userSaved = await newUser.save();
-  //   return resp.send(newUser);
-    // ({
-    //     // roles: userStored.roles,
-    //     // _id: userStored._id.toString(),
-    //     email: userSaved.email
-    //});
-  //   const user = {
-  //     email,
-  //     password,
-  //   };
-  // },
+const { secret } = config;
+
+module.exports = {
+  createToken: async (req, resp, next) => {
+    const { email, password } = req.body;
+    const userEmail = req.body.email;
+    const emailQuery = { email: userEmail };
+    try {
+      if (!password || !email || (!email && !password)) {
+        return next(400);
+      }
+      await user.findOne(emailQuery, (error, res) => {
+        if (!res) {
+          return next(403);
+        }
+        bcrypt.compare(password, res.password, (err, result) => {
+          if (!result) {
+            return next(401);
+          }
+          const token = jwt.sign(
+            { res },
+            secret,
+            { expiresIn: 300000 /*  5 min */ },
+          );
+          resp.json({
+            token,
+          });
+        });
+      });
+    } catch (err) {
+      if (err) {
+        return next(501);
+      }
+    }
+  },
 };

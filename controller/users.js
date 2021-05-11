@@ -29,6 +29,7 @@ module.exports = {
                   { expiresIn: '24h' },
                 );
                 resp.json({
+                  user: res,
                   auth: true,
                   token,
                 });

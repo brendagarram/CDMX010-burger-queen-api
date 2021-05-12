@@ -88,7 +88,7 @@ module.exports = {
     if (!userFounded) {
       return next(404);
     }
-    if (!isAdmin(req) && !(req.userAuth.id === uid || req.userAuth.email === uid)) {
+    if (!isAdmin(req) && !(req.userAuth.id === uid || req.userAuth.email === uid)) { // Sólo se enviará la información si el usuario es admin, o el usuario actual
       return next(403);
     }
     return resp.status(200).send({

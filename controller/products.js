@@ -22,6 +22,7 @@ module.exports = {
           price,
           image,
           type,
+          dateEntry: Date.now(),
         });
         const productSaved = await newProduct.save();
         resp.status(200).send(productSaved);
@@ -59,12 +60,8 @@ module.exports = {
     const lastPage = `limit=${limitPage}&page=${Math.ceil(totalDocs / limitPage)}`;
     const nextPage = `limit=${limitPage}&page=${endIndex < totalDocs ? page + 1 : Math.ceil(totalDocs / limitPage)}`;
     const prevPage = `limit=${limitPage}&page=${page > 1 ? page - 1 : 1}`;
-    if (!isAuthenticated) {
-      next(401);
-    } else {
-      resp.set('link', `<${url}?${firstPage}>; rel="first",<${url}?${prevPage}>; rel="prev",<${url}?${nextPage}>; rel="next",<${url}?${lastPage}>; rel="last"`);
-      results.result = await Product.find().skip(startIndex).limit(limitPage).exec();
-      resp.json(results);
-    }
+    resp.set('link', `<${url}?${firstPage}>; rel="first",<${url}?${prevPage}>; rel="prev",<${url}?${nextPage}>; rel="next",<${url}?${lastPage}>; rel="last"`);
+    results.result = await Product.find().skip(startIndex).limit(limitPage).exec();
+    resp.json(results);
   },
 };

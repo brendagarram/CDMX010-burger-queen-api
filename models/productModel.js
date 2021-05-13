@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema({
   dateEntry: {
     type: Date,
     required: true,
-    default: Date.now(),
+    // default: Date.now(),
   },
 });
 

@@ -36,11 +36,14 @@ module.exports = {
 
   getProducts: async (req, resp) => {
     //  http://localhost:8080/produts?page=2&limit=5
+    //  pagination
     const limitPage = parseInt(req.query.limit, 10) || 10;
     // se coloca ,10 como argumento de parseInt para indicar la base
     const page = parseInt(req.query.page, 10) || 1;
     const startIndex = (page - 1) * limitPage; // Rango en el que se irán mostrando los documentos
     const endIndex = page * limitPage;
+    //  type
+    const type = req.query.type;
     const totalDocs = await Product.countDocuments().exec();
     const results = {};
     const url = `${req.protocol}://${req.get('host')}${req.path}`;
@@ -61,7 +64,15 @@ module.exports = {
     const nextPage = `limit=${limitPage}&page=${endIndex < totalDocs ? page + 1 : Math.ceil(totalDocs / limitPage)}`;
     const prevPage = `limit=${limitPage}&page=${page > 1 ? page - 1 : 1}`;
     resp.set('link', `<${url}?${firstPage}>; rel="first",<${url}?${prevPage}>; rel="prev",<${url}?${nextPage}>; rel="next",<${url}?${lastPage}>; rel="last"`);
-    results.result = await Product.find().skip(startIndex).limit(limitPage).exec();
+    if(page == 'all' && type) {
+      results.result = await Product.find({type: type});
+    } else if (page == 'all') {
+      results.result = await Product.find();
+    } else if (type) {
+      results.result = await Product.find({type: type}).skip(startIndex).limit(limitPage).exec();
+    } else {
+      results.result = await Product.find().skip(startIndex).limit(limitPage).exec();
+    }
     resp.json(results);
   },
 };
